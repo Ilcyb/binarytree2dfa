@@ -21,21 +21,30 @@ class NodeValue(Enum):
 
 class BinaryTree:
 
-    def __init__(self, node):
+    current_layer = 1
+    this_layer_count = 0
+    layer_table = dict()
+
+    def __init__(self, node, layer=1):
         self.node = node
         self.left_tree = None
         self.right_tree = None
-        self.layer = 1
+        self.layer = layer
+        if self.layer > self.current_layer:
+            self.current_layer = self.layer
+            self.this_layer_count = 0
+            self.layer_table[self.current_layer] = list()
+        self.this_layer_count += 1
+        self.position = self.this_layer_count
+        self.layer_table[self.current_layer].append(self)
 
     def insert_left(self, left_tree):
-        self.left_tree = left_tree
+        self.left_tree = BinaryTree(left_tree, layer=self.layer + 1)
         self.left_tree.father = self
-        self.left_tree.layer = self.layer + 1
 
     def insert_right(self, right_tree):
-        self.right_tree = right_tree
+        self.right_tree = BinaryTree(right_tree, layer=self.layer + 1)
         self.right_tree.father = self
-        self.right_tree.layer = self.layer + 1
 
     def has_child(self):
         return self.left_tree != None or self.right_tree != None
@@ -68,3 +77,9 @@ class BinaryTree:
         if(self.right_tree != None):
             result_set = self.get_concurrent_node(self.right_tree, result_set)
         return result_set
+
+    @classmethod
+    def clean(cls):
+        cls.current_layer = 1
+        cls.this_layer_count = 0
+        cls.layer_table = dict()

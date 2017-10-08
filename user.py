@@ -134,6 +134,7 @@ class User:
 if __name__ == '__main__':
     hyb = User.verification('hyb', 'hyb')
     tree = hyb.build_a_binary_tree()
-    hyb.display_all_concurrent_node(tree)
-    hyb.enter_regular_exp()
-    hyb.save(tree)
+    # hyb.display_all_concurrent_node(tree)
+    # hyb.enter_regular_exp()
+    # hyb.save(tree)
+    tree.show()

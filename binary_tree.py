@@ -1,4 +1,5 @@
 from enum import Enum
+from binarytree import Node, show, _set_left, _set_right
 
 class NodeValue(Enum):
     order = '.'
@@ -19,13 +20,14 @@ class NodeValue(Enum):
     def is_unary_operator(cls, value):
         return not cls.is_binary_operator(value)
 
-class BinaryTree:
+class BinaryTree(Node):
 
     current_layer = 1
     this_layer_count = 0
     layer_table = {1:[]}
 
     def __init__(self, node, layer=1):
+        super().__init__(node) # 适配BinaryTree第三方库
         self.node = node
         self.left_tree = None
         self.right_tree = None
@@ -40,10 +42,12 @@ class BinaryTree:
 
     def insert_left(self, left_tree):
         self.left_tree = BinaryTree(left_tree, layer=self.layer + 1)
+        _set_left(self, self.left_tree) # 适配BinaryTree第三方库
         self.left_tree.father = self
 
     def insert_right(self, right_tree):
         self.right_tree = BinaryTree(right_tree, layer=self.layer + 1)
+        _set_right(self, self.right_tree) # 适配BinaryTree第三方库
         self.right_tree.father = self
 
     def has_child(self):
@@ -77,6 +81,9 @@ class BinaryTree:
         if(self.right_tree != None):
             result_set = self.right_tree.get_concurrent_node(result_set)
         return result_set
+
+    def show(self):
+        show(self)
 
     @classmethod
     def clean(cls):

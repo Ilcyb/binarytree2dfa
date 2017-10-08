@@ -23,20 +23,20 @@ class BinaryTree:
 
     current_layer = 1
     this_layer_count = 0
-    layer_table = dict()
+    layer_table = {1:[]}
 
     def __init__(self, node, layer=1):
         self.node = node
         self.left_tree = None
         self.right_tree = None
         self.layer = layer
-        if self.layer > self.current_layer:
-            self.current_layer = self.layer
-            self.this_layer_count = 0
-            self.layer_table[self.current_layer] = list()
-        self.this_layer_count += 1
-        self.position = self.this_layer_count
-        self.layer_table[self.current_layer].append(self)
+        if self.layer > BinaryTree.current_layer:
+            BinaryTree.current_layer = self.layer
+            BinaryTree.this_layer_count = 0
+            BinaryTree.layer_table[BinaryTree.current_layer] = list()
+        BinaryTree.this_layer_count += 1
+        self.position = BinaryTree.this_layer_count
+        BinaryTree.layer_table[BinaryTree.current_layer].append(self)
 
     def insert_left(self, left_tree):
         self.left_tree = BinaryTree(left_tree, layer=self.layer + 1)
@@ -70,16 +70,16 @@ class BinaryTree:
         return True
 
     def get_concurrent_node(self, result_set):
-        if self.node == NodeValue.concurrent:
+        if self.node == NodeValue.concurrent.value:
             result_set.append(self)
         if(self.left_tree != None):
-            result_set = self.get_concurrent_node(self.left_tree, result_set)
+            result_set = self.left_tree.get_concurrent_node(result_set)
         if(self.right_tree != None):
-            result_set = self.get_concurrent_node(self.right_tree, result_set)
+            result_set = self.right_tree.get_concurrent_node(result_set)
         return result_set
 
     @classmethod
     def clean(cls):
         cls.current_layer = 1
         cls.this_layer_count = 0
-        cls.layer_table = dict()
+        cls.layer_table = {1:[]}

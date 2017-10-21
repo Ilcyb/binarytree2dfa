@@ -53,6 +53,12 @@ class BinaryTree(Node):
     def has_child(self):
         return self.left_tree != None or self.right_tree != None
 
+    def has_left_child(self):
+        return self.left_tree != None
+
+    def has_right_child(self):
+        return self.right_tree != None
+
     def num_of_child(self):
         if self.has_child():
             if self.left_tree != None and self.right_tree != None:
@@ -81,6 +87,31 @@ class BinaryTree(Node):
         if(self.right_tree != None):
             result_set = self.right_tree.get_concurrent_node(result_set)
         return result_set
+
+    def gen_regex(self, regex_str):
+        if self.has_left_child():
+            if self.node == NodeValue.choose.value:
+                regex_str += '('
+            if self.node == NodeValue.Iteration.value:#
+                regex_str += '('#
+            regex_str = self.left_tree.gen_regex(regex_str)
+        if self.node == NodeValue.order.value: # 顺序
+            regex_str = self.right_tree.gen_regex(regex_str)
+        if self.node == NodeValue.choose.value: # 选择
+            regex_str = regex_str + '|'
+            regex_str = self.right_tree.gen_regex(regex_str)
+            regex_str = regex_str + ')'
+        if self.node == NodeValue.Iteration.value: #迭代
+            if self.has_left_child():
+                regex_str = regex_str + '*)'
+            else:
+                regex_str = regex_str + '('
+                regex_str = self.right_tree.gen_regex(regex_str)
+                regex_str = regex_str + '*)'
+        if not NodeValue.has_value(self.node):
+            regex_str += self.node
+        return regex_str
+
 
     def show(self):
         show(self)

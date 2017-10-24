@@ -28,6 +28,14 @@ class Stack:
                 count += 1
         return count
 
+    def pop_all(self):
+        result = str()
+        while True:
+            result = self.pop() + result
+            if self.is_empty():
+                break
+        return result
+
     # 有错误
     def pop_until(self, element):
         if self.have(element):

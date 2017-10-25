@@ -1,36 +1,44 @@
 class DFA:
     
-    def __init__(self, states, alphabet, functions, start_state, accept_state):
+    # DFA初始化来源：默认为0，用文件初始化，为1时用dfa的各属性初始化
+    def __init__(self, states, alphabet, functions, start_state, accept_state, source=0):
+        if source == 0:
         # 将状态文件中的状态集合读取至self.states中，状态文件中每个状态占一行
-        self.states = list()
-        with open(states, 'r') as f:
-            for line in f:
-                self.states.append(line.rstrip())
-        # 将符号表文件中的符号读取至self.alphabet中，符号表文件中每个符号占一行
-        self.alphabet = list()
-        with open(alphabet, 'r') as f:
-            for line in f:
-                self.alphabet.append(line.rstrip())
-        # 将状态转移文件中的状态转移函数读取至self.functions中，状态转移文件中每个函数占一行 如：(s1,w)=s2 s1状态接收w符号转移至s2状态
-        self.functions = dict()
-        with open(functions,'r') as f:
-            for line in f:
-                flist = line.split('=')
-                key = (flist[0].split(',')[0][1:],flist[0].split(',')[1][:-1])   
-                self.functions[key] = flist[1].rstrip() #字典 key:(状态，符号) value:转移后的状态
-        # 读取初始状态
-        with open(start_state, 'r') as f:
-            this_state = f.read().rstrip()
-            if this_state not in self.states:
-                raise ValueError('状态集合中不包括初始状态，自动机初始化失败')
-            self.start_state = this_state
-        # 读取接受状态
-        self.accept_state = list()
-        with open(accept_state, 'r') as f:
-            for line in f:
-                if line.rstrip() not in self.states:
-                    raise ValueError('接受状态中有不属于状态合集中的状态，自动机初始化失败')                    
-                self.accept_state.append(line.rstrip())
+            self.states = list()
+            with open(states, 'r') as f:
+                for line in f:
+                    self.states.append(line.rstrip())
+            # 将符号表文件中的符号读取至self.alphabet中，符号表文件中每个符号占一行
+            self.alphabet = list()
+            with open(alphabet, 'r') as f:
+                for line in f:
+                    self.alphabet.append(line.rstrip())
+            # 将状态转移文件中的状态转移函数读取至self.functions中，状态转移文件中每个函数占一行 如：(s1,w)=s2 s1状态接收w符号转移至s2状态
+            self.functions = dict()
+            with open(functions,'r') as f:
+                for line in f:
+                    flist = line.split('=')
+                    key = (flist[0].split(',')[0][1:],flist[0].split(',')[1][:-1])   
+                    self.functions[key] = flist[1].rstrip() #字典 key:(状态，符号) value:转移后的状态
+            # 读取初始状态
+            with open(start_state, 'r') as f:
+                this_state = f.read().rstrip()
+                if this_state not in self.states:
+                    raise ValueError('状态集合中不包括初始状态，自动机初始化失败')
+                self.start_state = this_state
+            # 读取接受状态
+            self.accept_state = list()
+            with open(accept_state, 'r') as f:
+                for line in f:
+                    if line.rstrip() not in self.states:
+                        raise ValueError('接受状态中有不属于状态合集中的状态，自动机初始化失败')                    
+                    self.accept_state.append(line.rstrip())
+        elif source == 1:
+            self.states = states
+            self.alphabet = alphabet
+            self.functions = functions
+            self.start_state = start_state
+            self.accept_state = accept_state
 
         print('自动机已读取成功')
         self.display()

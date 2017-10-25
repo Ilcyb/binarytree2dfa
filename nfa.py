@@ -127,7 +127,7 @@ class NFA:
         begin_list = list()
         final_list = list()
         begin_state = None
-        final_state = None
+        final_state = list()
         list_count_map = dict()
         states = list()
         for p in processed_list:
@@ -138,9 +138,9 @@ class NFA:
                 states.append(begin_state)
             elif self.final in p:
                 final_list = tuple(p)
-                final_state = count
-                list_count_map[final_list] = final_state
-                states.append(final_state)
+                final_state.append(count)
+                list_count_map[final_list] = count
+                states.append(count)
             else:
                 list_count_map[tuple(p)] = count
                 states.append(count)
@@ -148,7 +148,7 @@ class NFA:
         for k, v in dfa_list_functions.items():
             key = (list_count_map[k[0]], k[1])
             dfa_functions[key] = list_count_map[tuple(v)]
-        the_dfa = DFA(states, self.remove_duplicates_edge(), dfa_functions, [begin_state], [final_state], 1)
+        the_dfa = DFA(states, self.remove_duplicates_edge(), dfa_functions, [begin_state], final_state, 1)
         return the_dfa
 
     # states中的状态通过edge边可以到达的状态

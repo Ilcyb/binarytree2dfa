@@ -115,7 +115,8 @@ class User:
             conn = MySQLdb.connect(host='139.199.228.34', user=environ.get('mysql_username'),
                                    passwd=environ.get('mysql_password'), db='dfa')
             cur = conn.cursor()
-            cur.execute('select * from user where username=%s and password=%s', (username, password))
+            cur.execute(
+                'select * from user where username=%s and password=%s', (username, password))
             result = cur.fetchone()
             if result == None:
                 print('账号密码错误，登陆失败')

@@ -1,9 +1,9 @@
 class DFA:
-    
+
     # DFA初始化来源：默认为0，用文件初始化，为1时用dfa的各属性初始化
     def __init__(self, states, alphabet, functions, start_state, accept_state, source=0):
         if source == 0:
-        # 将状态文件中的状态集合读取至self.states中，状态文件中每个状态占一行
+            # 将状态文件中的状态集合读取至self.states中，状态文件中每个状态占一行
             self.states = list()
             with open(states, 'r') as f:
                 for line in f:
@@ -15,11 +15,13 @@ class DFA:
                     self.alphabet.append(line.rstrip())
             # 将状态转移文件中的状态转移函数读取至self.functions中，状态转移文件中每个函数占一行 如：(s1,w)=s2 s1状态接收w符号转移至s2状态
             self.functions = dict()
-            with open(functions,'r') as f:
+            with open(functions, 'r') as f:
                 for line in f:
                     flist = line.split('=')
-                    key = (flist[0].split(',')[0][1:],flist[0].split(',')[1][:-1])   
-                    self.functions[key] = flist[1].rstrip() #字典 key:(状态，符号) value:转移后的状态
+                    key = (flist[0].split(',')[0][1:],
+                           flist[0].split(',')[1][:-1])
+                    # 字典 key:(状态，符号) value:转移后的状态
+                    self.functions[key] = flist[1].rstrip()
             # 读取初始状态
             with open(start_state, 'r') as f:
                 this_state = f.read().rstrip()
@@ -31,7 +33,7 @@ class DFA:
             with open(accept_state, 'r') as f:
                 for line in f:
                     if line.rstrip() not in self.states:
-                        raise ValueError('接受状态中有不属于状态合集中的状态，自动机初始化失败')                    
+                        raise ValueError('接受状态中有不属于状态合集中的状态，自动机初始化失败')
                     self.accept_state.append(line.rstrip())
         elif source == 1:
             self.states = states
@@ -53,7 +55,7 @@ class DFA:
                 print('自动机重新生成')
             else:
                 self.parse(word)
-    
+
     def parse(self, word):
         now_state = self.start_state
         alpha_list = list(word)
@@ -61,52 +63,19 @@ class DFA:
             print('字符串中有不属于符号表的字符,请重新输入')
             return 0
         for c in alpha_list:
-            now_state = self.functions[now_state, c] if (now_state, c) in self.functions else now_state
+            now_state = self.functions[now_state, c] if (
+                now_state, c) in self.functions else now_state
         if now_state in self.accept_state:
             print('字符串' + word + '被状态' + now_state + '接受')
         else:
             print('字符串' + word + '没有被自动机接受，最终停在状态' + now_state)
 
-    #插入结点有
-    #1.一个结点引出另一个结点，互相转移条件围成环
-    #2.在两个结点中插入结点
-    #3.不插入结点，但在某结点上添加自转移条件
-    #4.不插入结点，在两结点之间增加转移条件
-    # def insert(self):
-    #     front = my_output('请输入要插入结点的前驱结点(若没有，则键入回车)')
-    #     if front != '':
-    #         front_state_l = my_output('请输入前驱结点状态转移至要插入的结点状态所需要的条件(若没有，则键入回车)')
-    #         front_state_r = my_output('请输入要插入的结点状态转移至前驱结点状态所需要的条件(若没有，则键入回车)')
-    #     behind = my_output('请输入要插入结点的后继结点(若没有，则键入回车)')
-    #     if behind != '':
-    #         behind_state_r = my_output('请输入要插入结点状态转移至后继结点状态所需要的条件(若没有，则键入回车)')
-    #         behind_state_l = my_output('请输入后继结点状态转移至要插入结点状态所需要的条件(若没有，则键入回车)')
-    #     inserted = my_output('请输入要插入的结点状态(若没有则键入回车)')
-    #     # 情况1 还有其他的输入能产生情况1
-    #     if front == behind and inserted != '' and front != inserted and front != '':
-    #         self.insert_cases(case_flag=1, front_state_l=front_state_l, behind_state_r=behind_state_r,
-    #                          front=front, inserted=inserted)
-    #     # 情况2
-    #     elif front != behind and inserted != '' and front != inserted 
-    #         and behind != inserted and front != '' and behind != '':
-    #         self.insert_cases(case_flag=2, front=front, behind=behind, 
-    #                             front_state_l=front_state_l, front_state_r=front_state_r,
-    #                             behind_state_l=behind_state_l, behind_state_r=behind_state_r, inserted=inserted)
-    #     # 情况3 输入：front和behind输入要添加自转移条件的结点，front_state_l输入自转移条件
-    #     elif front == behind and inserted == '' and front != ':
-    #         self.insert_cases(case_flag=3, front=front, front_state_l=front_state_l, inserted=inserted)
-    #     # 情况4 输入：front和behind输入转移条件的两边，
-    #     # front_state_l输入front到behind的转移条件,behind_state_r输入behind到front的转移条件
-    #     elif front != behind and inserted == '' and front != '' and behind != '':
-    #         self.insert_cases(case_flag=4, front=front, front_state_l=front_state_l,
-    #          behind=behind, behind_state_r=behind_state_r, inserted=inserted)
-
     def insert_2(self):
         print('选择插入类型：',
-                '1.在原有结点上向外延伸一个新的结点',
-                '2.在原有的两个结点之间插入新的结点',
-                '3.不插入新的结点，而是在原有的结点上增加自转移条件',
-                '4.不插入新的结点，而是在原有的结点之间增加转移条件', sep='\n')
+              '1.在原有结点上向外延伸一个新的结点',
+              '2.在原有的两个结点之间插入新的结点',
+              '3.不插入新的结点，而是在原有的结点上增加自转移条件',
+              '4.不插入新的结点，而是在原有的结点之间增加转移条件', sep='\n')
         case = input('>>> ')
         try:
             case = int(case)
@@ -136,7 +105,7 @@ class DFA:
                 is_accept = my_output('要插入的该结点是否为接受状态？(y/any key except y)')
                 if is_accept == 'y':
                     self.accept_state.append(inserted)
-                print('成功插入新状态结点',inserted)
+                print('成功插入新状态结点', inserted)
                 return True
             elif case == 2:
                 older_1 = my_output('请输入原有结点1')
@@ -175,7 +144,7 @@ class DFA:
                 is_accept = my_output('要插入的该结点是否为接受状态？(y/any key except y)')
                 if is_accept == 'y':
                     self.accept_state.append(inserted)
-                print('成功插入新状态结点',inserted)
+                print('成功插入新状态结点', inserted)
                 return True
             elif case == 3:
                 inserted = my_output('请输入要增加自转移条件的结点')
@@ -219,28 +188,7 @@ class DFA:
             else:
                 print('请选择正确的选项')
         except ValueError:
-            print('请选择正确的选项')        
-
-    # def insert_cases(self, case_flag, front=None, front_state_l=None, front_state_r=None,
-    #                  behind=None, behind_state_l=None, behind_state_r=None, inserted=None):
-    #     if case_flag == 1:
-    #         if inserted in self.states:
-    #             print('要插入的该结点已存在')
-    #             return False
-    #         is_accept = my_output('要插入的该结点是否为接受状态？(y/any key except y)')
-    #         if is_accept == 'y':
-    #             self.accept_state.append(inserted)
-    #         self.functions[(inserted, behind_state_r)] = front
-    #         self.functions[(front, front_state_l)] = inserted
-    #         self.states.append(inserted)
-    #     if case_flag == 2:
-    #         if inserted in self.states:
-    #             print('要插入的该结点已存在')
-    #             return False
-    #         is_accept = my_output('要插入的该结点是否为接受状态？(y/any key except y)')
-    #         if is_accept == 'y':
-    #             self.accept_state.append(inserted)
-            
+            print('请选择正确的选项')
 
     def display(self):
         print('states:', self.states)
@@ -249,16 +197,17 @@ class DFA:
         print('start state:', self.start_state)
         print('accept states:', self.accept_state)
 
-    
+
 def my_output(content):
     print(content)
     temp = input('>>> ')
-    return temp        
+    return temp
+
 
 if __name__ == '__main__':
     d1 = DFA(r'C:\Ddisk\py\DFA\test1\states.txt',
-            r'C:\Ddisk\py\DFA\test1\alphabet.txt',
-            r'C:\Ddisk\py\DFA\test1\functions.txt',
-            r'C:\Ddisk\py\DFA\test1\start_state.txt',
-            r'C:\Ddisk\py\DFA\test1\accept_states.txt')
+             r'C:\Ddisk\py\DFA\test1\alphabet.txt',
+             r'C:\Ddisk\py\DFA\test1\functions.txt',
+             r'C:\Ddisk\py\DFA\test1\start_state.txt',
+             r'C:\Ddisk\py\DFA\test1\accept_states.txt')
     d1.loop()

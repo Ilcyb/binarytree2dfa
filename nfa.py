@@ -61,9 +61,11 @@ class NFA:
                 elif current_char == '|':
                     left_expression = self._expression_[:c]
                     right_expression = self._expression_[c + 1:]
-                    left_n = NFA(left_expression, self.functions, self, self.edge)
+                    left_n = NFA(left_expression,
+                                 self.functions, self, self.edge)
                     count = left_n.parse(count + 1)
-                    right_n = NFA(right_expression, self.functions, self, self.edge)
+                    right_n = NFA(right_expression,
+                                  self.functions, self, self.edge)
                     count = right_n.parse(count + 1)
                     key = (self.begin, 'ε')
                     NFA.insert_into_dict(key, self.functions, left_n.begin)
@@ -148,7 +150,8 @@ class NFA:
         for k, v in dfa_list_functions.items():
             key = (list_count_map[k[0]], k[1])
             dfa_functions[key] = list_count_map[tuple(v)]
-        the_dfa = DFA(states, self.remove_duplicates_edge(), dfa_functions, [begin_state], final_state, 1)
+        the_dfa = DFA(states, self.remove_duplicates_edge(),
+                      dfa_functions, [begin_state], final_state, 1)
         return the_dfa
 
     # states中的状态通过edge边可以到达的状态

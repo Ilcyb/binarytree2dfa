@@ -43,7 +43,7 @@ class Stack:
                 if self.pop() == element:
                     break
         else:
-            raise ValueError('栈中没有此元素:',element)
+            raise ValueError('栈中没有此元素:', element)
 
     # 有错误
     def copy_until(self, element):
@@ -54,7 +54,7 @@ class Stack:
                 if e == element:
                     break
         else:
-            raise ValueError('栈中没有此元素:',element)
+            raise ValueError('栈中没有此元素:', element)
 
     def brackets(self, nums):
         result = str()
@@ -66,4 +66,4 @@ class Stack:
                 else:
                     nums -= 1
         if nums > 0:
-            raise ValueError('栈中没有',nums,'个右括号')
+            raise ValueError('栈中没有', nums, '个右括号')

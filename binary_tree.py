@@ -70,6 +70,7 @@ class BinaryTree(Node):
         return 0
 
     def validity(self):
+        # FIXME:迭代有两个子节点时无法识别出来
         # 验证二叉树的非叶子结点是否为指定的值
         if self.has_child() and not NodeValue.has_value(self.node):
             return False

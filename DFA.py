@@ -42,7 +42,12 @@ class DFA:
             self.start_state = start_state
             self.accept_state = accept_state
 
-        print('自动机已读取成功')
+        self.trap_state = list()
+
+        if source == 0:
+            print('自动机已读取成功')
+        elif source == 1:
+            print('自动机已生成成功')
         self.display()
 
     def loop(self):
@@ -54,21 +59,28 @@ class DFA:
                     pass
                 print('自动机重新生成')
             else:
-                self.parse(word)
+                if not self.parse(word):
+                    return word
 
     def parse(self, word):
         now_state = self.start_state
         alpha_list = list(word)
         if not set(alpha_list).issubset(set(self.alphabet)):
             print('字符串中有不属于符号表的字符,请重新输入')
-            return 0
+            return True
         for c in alpha_list:
             now_state = self.functions[now_state, c] if (
                 now_state, c) in self.functions else now_state
-        if now_state in self.accept_state:
+        if now_state in self.trap_state:
+            print('字符串' + word + '进入陷阱状态' + now_state)
+            return False
+        elif now_state in self.accept_state:
             print('字符串' + word + '被状态' + now_state + '接受')
+            return True
         else:
             print('字符串' + word + '没有被自动机接受，最终停在状态' + now_state)
+            return True
+
 
     def insert_2(self):
         print('选择插入类型：',
@@ -102,9 +114,9 @@ class DFA:
                     if ito not in self.alphabet:
                         self.alphabet.append(ito)
                     self.functions[(inserted, ito)] = older
-                is_accept = my_output('要插入的该结点是否为接受状态？(y/any key except y)')
+                is_accept = my_output('要插入的该结点是否为陷阱状态？(y/any key except y)')
                 if is_accept == 'y':
-                    self.accept_state.append(inserted)
+                    self.trap_state.append(inserted)
                 print('成功插入新状态结点', inserted)
                 return True
             elif case == 2:
@@ -141,9 +153,9 @@ class DFA:
                     if ito2 not in self.alphabet:
                         self.alphabet.append(ito2)
                     self.functions[(inserted, ito2)] = older_2
-                is_accept = my_output('要插入的该结点是否为接受状态？(y/any key except y)')
+                is_accept = my_output('要插入的该结点是否为陷阱状态？(y/any key except y)')
                 if is_accept == 'y':
-                    self.accept_state.append(inserted)
+                    self.trap_state.append(inserted)
                 print('成功插入新状态结点', inserted)
                 return True
             elif case == 3:
@@ -202,12 +214,3 @@ def my_output(content):
     print(content)
     temp = input('>>> ')
     return temp
-
-
-if __name__ == '__main__':
-    d1 = DFA(r'C:\Ddisk\py\DFA\test1\states.txt',
-             r'C:\Ddisk\py\DFA\test1\alphabet.txt',
-             r'C:\Ddisk\py\DFA\test1\functions.txt',
-             r'C:\Ddisk\py\DFA\test1\start_state.txt',
-             r'C:\Ddisk\py\DFA\test1\accept_states.txt')
-    d1.loop()

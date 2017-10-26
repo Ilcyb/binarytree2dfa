@@ -148,10 +148,10 @@ class NFA:
                 states.append(count)
             count += 1
         for k, v in dfa_list_functions.items():
-            key = (list_count_map[k[0]], k[1])
-            dfa_functions[key] = list_count_map[tuple(v)]
-        the_dfa = DFA(states, self.remove_duplicates_edge(),
-                      dfa_functions, [begin_state], final_state, 1)
+            key = (str(list_count_map[k[0]]), k[1])
+            dfa_functions[key] = str(list_count_map[tuple(v)])
+        the_dfa = DFA([str(s) for s in states], list(self.remove_duplicates_edge()),
+                      dfa_functions, str(begin_state), [str(s) for s in final_state], 1)
         return the_dfa
 
     # states中的状态通过edge边可以到达的状态
@@ -171,12 +171,3 @@ class NFA:
                 temp_list = self.functions[(state, 'ε')]
                 result.extend([i for i in temp_list if i not in result])
         return set(result)
-
-
-if __name__ == '__main__':
-    result = dict()
-    n = NFA('((a|b)|(c*))abb(e|f)(k*)', result)
-    n.parse()
-    result = n.get_result()
-    print(result)
-    the_dfa = n.nfa2dfa()
